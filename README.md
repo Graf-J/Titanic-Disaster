@@ -12,3 +12,7 @@ This project is implemented in **Python** and **R**. Follow the instructions bel
 2. Sign in or create a Kaggle account.
 3. Click the **Download All** button to download the dataset.
 4. Extract the files and save **train.csv** and **test.csv** on your local machine.
+
+## 📘 Notes
+If you’re interested in the data cleaning, preprocessing, and model selection workflow, you can find the corresponding scripts inside the `src/python` and `src/r` folders.  
+These files are provided for transparency and exploration purposes only. They are **excluded from the Docker build** to keep the container size small and minimize build times.
