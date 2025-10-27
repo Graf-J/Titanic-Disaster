@@ -13,6 +13,27 @@ This project is implemented in **Python** and **R**. Follow the instructions bel
 3. Click the **Download All** button to download the dataset.
 4. Extract the files and save **train.csv** and **test.csv** on your local machine.
 
+### 2) Start Applications
+1. Clone this repository:
+```bash
+git clone https://github.com/Graf-J/Titanic-Disaster.git
+```
+2. Navigate into the project folder:
+```bash
+cd Titanic-Disaster
+```
+3. Start both applications using Docker Compose:
+```bash
+docker-compose up -d
+```
+
+### 3) Make Predictions
+1. Open the Python (Streamlit) application in your browser: http://localhost:3000/
+2. Open the R (Shiny) application in your browser: http://localhost:3001/
+3. Follow the instructions on each web interface to:
+    * Upload `train.csv`
+    * Upload `test.csv`
+    * Download the resulting `predictions.csv`
 
 ## Notes
 
@@ -40,12 +61,12 @@ The Python workflow is provided as a Jupyter notebook:
 To run this notebook locally:
 
 ```bash
-$ pip install -r requirements.dev.txt
+pip install -r requirements.dev.txt
 ```
 
 ### 🖥️ R
 
-The Python workflow is provided as a Jupyter notebook:
+The Python workflow is provided as a Quarto notebook:
 
 - **File:** `src/r/build-model.qmd`  
 - **Purpose:** Shows the R equivalent workflow for preprocessing, model training, and evaluation.
@@ -53,7 +74,7 @@ The Python workflow is provided as a Jupyter notebook:
 To run it locally, first install the development dependencies:
 
 ```r
-$ source("src/r/install_packages_dev.R")
+source("src/r/install_packages_dev.R")
 ```
 
 **Note:** GitHub does not render Quarto files directly. To make the analysis easy to view, the notebook has been rendered as src/r/build-model.pdf. This allows you to inspect the full workflow and results without running the code.
