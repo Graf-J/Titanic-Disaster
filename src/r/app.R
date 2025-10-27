@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(readr)
 library(parsnip)
 library(workflows)
 library(recipes)
