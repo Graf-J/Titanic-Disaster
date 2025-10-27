@@ -1,10 +1,11 @@
 ---
 title: "Titanic Disaster"
-format: html
+format: pdf
 editor: visual
 ---
 
 ```{r}
+#| output: false
 library(readr)
 library(here)
 library(rsample)
@@ -17,7 +18,11 @@ library(yardstick)
 ## Load Data
 
 ```{r}
+#| output: false
 titanic <- read_csv(here("src", "data", "train.csv"))
+```
+
+```{r}
 head(titanic)
 ```
 
@@ -103,7 +108,6 @@ titanic_fit <- fit(titanic_workflow, data = train_data)
 test_data$Survived <- as.factor(test_data$Survived)
 predictions <- predict(titanic_fit, new_data = test_data) %>%
   bind_cols(test_data)
-head(predictions)
 ```
 
 ```{r}
@@ -117,17 +121,22 @@ accuracy(predictions, truth = Survived, estimate = .pred_class)
 ## Simulate File Upload
 
 ```{r}
+#| output: false
 train_data <- read_csv(here("src", "data", "train.csv"))
 train_data$Survived = as.factor(train_data$Survived)
 model <- fit(titanic_workflow, data = train_data)
 ```
 
 ```{r}
+#| output: false
 test_data <- read_csv(here("src", "data", "test.csv"))
 prediction <- predict(model, new_data = test_data)
 result <- data.frame(
   PassengerId = test_data$PassengerId,
   Survived = prediction$.pred_class
 )
+```
+
+```{r}
 head(result)
 ```
