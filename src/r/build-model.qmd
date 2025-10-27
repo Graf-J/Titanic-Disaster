@@ -1,0 +1,142 @@
+---
+title: "Titanic Disaster"
+format: pdf
+editor: visual
+---
+
+```{r}
+#| output: false
+library(readr)
+library(here)
+library(rsample)
+library(recipes)
+library(parsnip)
+library(workflows)
+library(yardstick)
+```
+
+## Load Data
+
+```{r}
+#| output: false
+titanic <- read_csv(here("src", "data", "train.csv"))
+```
+
+```{r}
+head(titanic)
+```
+
+## Train-Test-Split
+
+```{r}
+set.seed(42)
+
+split <- initial_split(titanic)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+```{r}
+nrow(train_data)
+nrow(test_data)
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+# Pie plot for train data
+pie(
+  table(train_data$Survived),
+  labels = c("Did not survive", "Survived"),
+  main = "Train Data",
+  col = c("red", "green")
+)
+
+# Pie plot for test data
+pie(
+  table(test_data$Survived),
+  labels = c("Did not survive", "Survived"),
+  main = "Test Data",
+  col = c("red", "green")
+)
+```
+
+## Preprocess Data
+
+```{r}
+train_data$Survived <- as.factor(train_data$Survived)
+
+titanic_recipe <- recipe(Survived ~ ., data = train_data) %>%
+  step_rm(PassengerId, Name, Ticket, Cabin) %>%
+  step_impute_mean(Age) %>%
+  step_impute_mode(Embarked) %>%
+  step_mutate(across(c(Pclass, Sex, Embarked), as.factor)) %>%
+  step_dummy(c(Pclass, Sex, Embarked)) %>%
+  step_normalize(all_of(c("Age", "Fare")))
+```
+
+```{r}
+prep_recipe <- prep(titanic_recipe, training = train_data)
+```
+
+```{r}
+train_processed <- bake(prep_recipe, new_data = train_data)
+head(train_processed)
+```
+
+## Fit Model
+
+```{r}
+log_reg_model <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+```
+
+```{r}
+titanic_workflow <- workflow() %>%
+  add_model(log_reg_model) %>%
+  add_recipe(titanic_recipe)
+```
+
+```{r}
+titanic_fit <- fit(titanic_workflow, data = train_data)
+```
+
+## Predict
+
+```{r}
+test_data$Survived <- as.factor(test_data$Survived)
+predictions <- predict(titanic_fit, new_data = test_data) %>%
+  bind_cols(test_data)
+```
+
+```{r}
+conf_mat(predictions, truth = Survived, estimate = .pred_class)
+```
+
+```{r}
+accuracy(predictions, truth = Survived, estimate = .pred_class)
+```
+
+## Simulate File Upload
+
+```{r}
+#| output: false
+train_data <- read_csv(here("src", "data", "train.csv"))
+train_data$Survived = as.factor(train_data$Survived)
+model <- fit(titanic_workflow, data = train_data)
+```
+
+```{r}
+#| output: false
+test_data <- read_csv(here("src", "data", "test.csv"))
+prediction <- predict(model, new_data = test_data)
+result <- data.frame(
+  PassengerId = test_data$PassengerId,
+  Survived = prediction$.pred_class
+)
+```
+
+```{r}
+head(result)
+```
