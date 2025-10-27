@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  streamlit:
+    build:
+      context: ./src/python
+      dockerfile: Dockerfile
+    container_name: titanic-streamlit
+    ports:
+      - "3000:3000"
+
+  shiny:
+    build:
+      context: ./src/r
+      dockerfile: Dockerfile
+    container_name: titanic-shiny
+    ports:
+      - "3001:3001"
